@@ -140,3 +140,36 @@ firebase-debug.log
 functions/node_modules/
 test-results/
 temp/
+
+
+# =========================
+# 🔹 Machine Learning Files
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pkl
+*.h5
+*.tflite
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+*.weights
+*.joblib
+
+# Ignore datasets and training artifacts
+ml_model/dataset/
+ml_model/outputs/
+ml_model/checkpoints/
+ml_model/runs/
+ml_model/*.zip
+ml_model/*.tar
+ml_model/*.gz
+
+# Keep only important model/code
+!ml_model/scripts/
+!ml_model/models/
+!ml_model/requirements.txt
+!ml_model/README.md
