@@ -1,3 +1,18 @@
+# =========================
+# 🔹 Node.js & Web Project
+# =========================
+node_modules/
+dist/
+dist-ssr/
+build/
+.out/
+.next/
+.nuxt/
+.cache/
+.tmp/
+coverage/
+.vite/
+
 # Logs
 logs
 *.log
@@ -7,18 +22,121 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
 
-# Editor directories and files
+# Local data & runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+*.sqlite
+*.sqlite3
+
+# Dependency directories
+jspm_packages/
+.bun/
+.pnpm-store/
+.npm/
+.yarn/
+.cache/
+.parcel-cache/
+.vercel/
+.netlify/
+
+# TypeScript / ESLint
+*.tsbuildinfo
+.eslintcache
+
+# =========================
+# 🔹 ESP32 / Arduino Projects
+# =========================
+*.bin
+*.elf
+*.hex
+*.o
+*.out
+*.map
+*.d
+*.a
+*.lst
+*.eep
+*.lss
+
+# Arduino / PlatformIO build dirs
+build/
+.pio/
+.pioenvs/
+.piolibdeps/
+.platformio/
+.arduino-build/
+.arduino_ci/
+.cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+
+# Ignore generated IDE config JSONs
+CameralIDE/*.json
+SensorIDE/*.json
+arduino ide/*.json
+
+# But keep important source files
+!CameralIDE/*.ino
+!CameralIDE/*.h
+!CameralIDE/*.cpp
+!SensorIDE/*.ino
+!SensorIDE/*.h
+!SensorIDE/*.cpp
+!arduino ide/*.ino
+!arduino ide/*.h
+!arduino ide/*.cpp
+
+# =========================
+# 🔹 Editor & System Files
+# =========================
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# =========================
+# 🔹 Misc / Local Files
+# =========================
+*.local
+*.bak
+*.tmp
+*.temp
+*.old
+*.orig
+*.lock
+*.log
+*.cache
+*.gz
+*.zip
+
+# =========================
+# 🔹 Project-specific Exclusions
+# =========================
+db.json
+database.sqlite
+firebase-debug.log
+functions/node_modules/
+test-results/
+temp/

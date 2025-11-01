@@ -1,72 +1,53 @@
 import Alert from "../models/Alert.js";
 
 let ioRef = null;
-let latestSensorData = null; // store temporarily to merge with image data later
-
 export const setIO = (io) => {
   ioRef = io;
 };
 
-// 1️⃣ Sensor sends its data
-export const receiveSensorData = async (req, res) => {
+// 📩 Create a new alert (from ESP32)
+export const createAlert = async (req, res) => {
   try {
     const { deviceID, eventType, distance, timestamp } = req.body;
-    latestSensorData = { deviceID, eventType, distance, timestamp };
-    console.log("📡 Sensor Data Received:", latestSensorData);
-    res.status(200).send("Sensor data stored temporarily");
+
+    const newAlert = new Alert({
+      deviceID,
+      eventType,
+      distance,
+      timestamp,
+    });
+
+    await newAlert.save();
+    console.log("🚨 New Alert received:", newAlert);
+
+    // 🔊 Emit real-time alert to connected frontends
+    if (ioRef) ioRef.emit("newAlert", newAlert);
+
+    res.status(201).json({ success: true, alert: newAlert });
   } catch (err) {
-    console.error("❌ Error receiving sensor data:", err.message);
-    res.status(500).send("Sensor data error");
+    console.error("❌ Failed to create alert:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// 2️⃣ Camera sends its image, backend merges with latest sensor data
-export const receiveImageData = async (req, res) => {
+// 📤 Fetch recent alerts for dashboard
+export const getAlerts = async (req, res) => {
   try {
-    const { deviceID, image, timestamp } = req.body;
-    console.log("📸 Image Received from Camera:", deviceID);
-
-    const mergedAlert = {
-      deviceID: latestSensorData?.deviceID || "unknown_sensor",
-      eventType: latestSensorData?.eventType || "intrusion",
-      distance: latestSensorData?.distance || null,
-      timestamp: latestSensorData?.timestamp || new Date(),
-      cameraDevice: deviceID,
-      image,
-      imageTimestamp: timestamp,
-      severity: latestSensorData?.distance < 10 ? "HIGH" : "MEDIUM"
-    };
-
-    const alert = await Alert.create(mergedAlert);
-
-    if (ioRef) ioRef.emit("new-alert", alert);
-
-    res.status(200).send("Merged alert stored successfully");
+    const alerts = await Alert.find().sort({ timestamp: -1 }).limit(20);
+    res.status(200).json(alerts);
   } catch (err) {
-    console.error("❌ Error merging image data:", err.message);
-    res.status(500).send("Failed to merge data");
+    console.error("❌ Fetch alerts failed:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// 3️⃣ Get all alerts
-export const getAllAlerts = async (req, res) => {
+// 🧹 Optional: Clear all alerts (for admin panel or testing)
+export const clearAlerts = async (req, res) => {
   try {
-    const alerts = await Alert.find().sort({ timestamp: -1 });
-    res.json(alerts);
+    await Alert.deleteMany({});
+    if (ioRef) ioRef.emit("alertsCleared");
+    res.status(200).json({ success: true, message: "All alerts cleared" });
   } catch (err) {
-    console.error("❌ Error fetching alerts:", err.message);
-    res.status(500).json({ message: "Failed to fetch alerts" });
-  }
-};
-
-// 4️⃣ Get alert by ID (for View Details page)
-export const getAlertById = async (req, res) => {
-  try {
-    const alert = await Alert.findById(req.params.id);
-    if (!alert) return res.status(404).json({ message: "Alert not found" });
-    res.json(alert);
-  } catch (err) {
-    console.error("❌ Error fetching alert:", err.message);
-    res.status(500).json({ message: "Error retrieving alert" });
+    res.status(500).json({ success: false, message: err.message });
   }
 };

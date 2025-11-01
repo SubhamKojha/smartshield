@@ -1,23 +1,14 @@
 import express from "express";
 import {
-  receiveSensorData,
-  receiveImageData,
-  getAllAlerts,
-  getAlertById
+  createAlert,
+  getAlerts,
+  clearAlerts,
 } from "../controllers/alertController.js";
 
 const router = express.Router();
 
-// 🧠 Step 1: Sensor sends its data here
-router.post("/", receiveSensorData);
-
-// 🧠 Step 2: Camera sends its image here
-router.post("/image", receiveImageData);
-
-// 🧠 Step 3: Get all alerts (for dashboard)
-router.get("/", getAllAlerts);
-
-// 🧠 Step 4: Get single alert (for “View Details” page)
-router.get("/:id", getAlertById);
+router.post("/", createAlert);  // 🔴 ESP32 posts here
+router.get("/", getAlerts);     // 🟢 Frontend fetches alerts
+router.delete("/", clearAlerts); // 🧹 Optional clear endpoint
 
 export default router;
