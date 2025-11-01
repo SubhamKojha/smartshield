@@ -188,4 +188,4 @@ It’s more than a security system — it’s a **self-aware guardian** for your
 ---
 
 ### 🔰 Developed with by Team BrainRot
-```
+
